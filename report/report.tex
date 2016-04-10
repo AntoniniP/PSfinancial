@@ -17,6 +17,8 @@
 \usepackage{graphicx, epstopdf}  % Support EPS figures
 \epstopdfsetup{outdir=.texpadtmp/}
 \usepackage{url, hyperref}  % \url command, properly working
+\usepackage{biblatex}  % Bibliography
+\addbibresource{bibliography.bib}
  
 %% Shortcuts
 \usepackage{xspace}
@@ -36,7 +38,6 @@
 
 \maketitle
 
-
 \begin{abstract}
 Time series data is characterised as large in data size, high dimensionality and update continuously. Moreover, the time series data is always considered as a whole instead of individual numerical fields. As a consequence, in order to analyse and mine time series data, segmentation and dimensionality reduction are essential. In particular, in the following pages we are going to collect and study some segmentation methods, applied in particular to stock market data. Stock time series has its own characteristics over other time series. 
 \end{abstract}
@@ -48,7 +49,10 @@ In this paper we are going first to list some of the main research papers where 
 
 
 \section{Methods}\label{sec:methods}
-\lipsum[1-3]
+\lipsum[1]
+
+\subsection{\citeauthor{5961935}. \citetitle{5961935}}
+\lipsum[2-3]
 
 
 \section{Implementations}\label{sec:implementations}
@@ -57,7 +61,7 @@ In this paper we are going first to list some of the main research papers where 
 
 \subsection{Turning points in \matlab}
 
-Here we are presenting our implementation of the method to find \emph{turning points}, as it was presented in % TODO Where??
+Here we are presenting our implementation of the method to find \emph{turning points}, as it was presented in \cite{5961935}.
 
 The method is developed and tested over \csv files downloaded from Yahoo! Finance website\footnote{\url{http://finance.yahoo.com/market-overview/}}. Should another source be used, basic adaptations may be necessary, mostly in the handling of temporal data (i.e., dates). 
 
@@ -75,8 +79,7 @@ y = TurningPoints(M);  % computes the results
 
 \end{listing}
 
-%TODO Riferimento
-Actually, \texttt{TurningPoints()} function is implemented as shown in \cref{lst:functionMatlab}. The first part of the function implements what was presented in XXX, whereas the second part performs some operations in order to present in an appropriate way the results.
+Actually, \texttt{TurningPoints()} function is implemented as shown in \cref{lst:functionMatlab}. The first part of the function implements what was presented in \cite{5961935}, whereas the second part performs some operations in order to present in an appropriate way the results.
 
 \begin{listing}[H]
 
@@ -102,6 +105,10 @@ We also performed some tests, to guarantee the proper functioning of the impleme
 
 \subsection{Other implementations}
 \lipsum[4-6]
+
+%TODO Sistema.
+\defbibnote{prenote}{DOI, when defined, serves as URL to retrieve the document. Documents may be accessible only on institutional log in (e.g., academic credentials).}
+\printbibliography[title= Bibliography, prenote=prenote]
 
 
 \end{document}
