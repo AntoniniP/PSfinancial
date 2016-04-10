@@ -1,15 +1,12 @@
-\documentclass{article}
+\documentclass[a4paper]{article}
 
 %% Font selection
-%\usepackage{lmodern}
-\usepackage{bera}
-%\usepackage{DejaVuSerifCondensed}
-%\usepackage{beramono}
+\usepackage{DejaVuSerifCondensed, DejaVuSansCondensed, DejaVuSansMono}
 \usepackage{microtype}
 \usepackage[T1]{fontenc}
 
 %% Listings (see https://www.ctan.org/pkg/minted for installation)
-\usepackage[cache=true,outputdir=.texpadtmp]{minted}
+\usepackage[cache=true, outputdir=.texpadtmp]{minted}
 \setminted{ fontsize=\small, frame = leftline, framesep = 2\fboxsep }
 \setmintedinline{ fontsize=\normalfont }
 \usepackage{upquote}  % TT quotes in listings
@@ -17,16 +14,17 @@
 %% Other packages
 \usepackage[english]{babel}  % Language support
 \usepackage{lipsum}  % TODO Remove
-\usepackage{graphicx}  % Support EPS figures
-\usepackage{url,hyperref}  % \url command, properly working
-
-%% Last package of all
-\usepackage{cleveref}  % Allows en­hanced cross-ref­er­enc­ing fea­tures
+\usepackage{graphicx, epstopdf}  % Support EPS figures
+\epstopdfsetup{outdir=.texpadtmp/}
+\usepackage{url, hyperref}  % \url command, properly working
  
-%% Shourtcuts
+%% Shortcuts
 \usepackage{xspace}
 \newcommand{\matlab}{\textsc{Matlab}\xspace}
 \newcommand{\csv}{\texttt{CSV}\xspace}
+
+%% Last package of all
+\usepackage{cleveref}  % Allows en­hanced cross-ref­er­enc­ing fea­tures
 
 %% Document details
 \title{Piecewise segmentation for financial data}
@@ -78,7 +76,7 @@ y = TurningPoints(M);  % computes the results
 \end{listing}
 
 %TODO Riferimento
-Actually, \mintinline{matlab}{TurningPoints()} function is implemented as shown in \cref{lst:functionMatlab}. The first part of the function implements what was presented in XXX, whereas the second part performs some operations in order to present in an appropriate way the results.
+Actually, \texttt{TurningPoints()} function is implemented as shown in \cref{lst:functionMatlab}. The first part of the function implements what was presented in XXX, whereas the second part performs some operations in order to present in an appropriate way the results.
 
 \begin{listing}[H]
 
@@ -87,7 +85,7 @@ Actually, \mintinline{matlab}{TurningPoints()} function is implemented as shown 
 \caption{\texttt{TurningPoints()} function}\label{lst:functionMatlab}
 
 \end{listing}
-
+ 
 We also performed some tests, to guarantee the proper functioning of the implemented algorithm. Weekly stock market data from A2A (\texttt{A2A.MI}) over the whole 2015 was used as source. The result of the processing is in \cref{fig:a2a_w_2015}.
 
 \begin{figure}
