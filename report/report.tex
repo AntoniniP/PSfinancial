@@ -15,14 +15,18 @@
 			framesep = 2\fboxsep}
 \usepackage{upquote}  % TT quotes in listings
 
-%% Other packages
+%% Graphics
 \usepackage{graphicx, epstopdf}  % Support EPS figures
 \epstopdfsetup{outdir=.texpadtmp/}
-\usepackage{url, hyperref}  % \url command, properly working
-\usepackage[style=ieee, isbn=false]{biblatex}  % Bibliography
+
+%% Bibliography
+\usepackage[style=ieee, isbn=false]{biblatex}
 \addbibresource{bibliography.bib}
+
+%% Other packages
 \usepackage{framed}  % Enables frames around quote env.
- 
+\usepackage{url, hyperref}  % \url command, properly working
+
 %% Shortcuts
 \usepackage{xspace}
 \newcommand{\matlab}{\textsc{Matlab}\xspace}
@@ -34,7 +38,9 @@
 	\item [Title]\citetitle{#1}
 	\item [Year]\citedate{#1}
 	\item [Keywords]\texttt{#2}
-\end{description}\end{quote}\end{framed}}
+\end{description}\end{quote}\end{framed}
+
+}
 
 %% Last package of all
 \usepackage{cleveref}  % Allows en­hanced cross-ref­er­enc­ing fea­tures
@@ -44,18 +50,21 @@
 \author{Paolo Antonini \and Davide Azzalini \and Fabio Azzalini}
 \date{}
 
-
 \usepackage{lipsum}  %TODO REV Remove
-
 
 %% DOCUMENT
 \begin{document}
 
 \maketitle
 
+
+
 \begin{abstract}
 Time series data is characterised as large in data size, high dimensionality and update continuously. Moreover, the time series data is always considered as a whole instead of individual numerical fields. As a consequence, in order to analyse and mine time series data, segmentation and dimensionality reduction are essential. In particular, in the following pages we are going to collect and study some segmentation methods, applied in particular to stock market data. Stock time series has its own characteristics over other time series. 
 \end{abstract}
+
+
+
 
 \section{Introduction}
 The tasks of segmentation and dimensionality reduction, as well as identification of trends, are fundamental to allow a number of time series analysis and mining tasks. As a matter of fact, the fields of application of such procedures are numerous (ECG, exchange rates, sensor detections of any kind, \dots) and methods differ from application to application, due to the characteristics of data. As a consequence, literature regarding these issues is vast. 
