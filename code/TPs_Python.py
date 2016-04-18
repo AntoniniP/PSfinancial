@@ -4,25 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
 
-"""
-Sources:
--Yahoo! Finance
--Google Finance
--St.Louis FED (FRED)
--Kenneth French’s data library
--World Bank
--Google Analytics    
-
-Possible indicators for Yahoo Finance:
--Open         
--High
--Low
--Close
--Volume
--Adj Close
-
-"""
-
 end = datetime.now()
 start = datetime(end.year-1, end.month, end.day)
 df = web.DataReader("A2A.MI", 'yahoo', start, end)
@@ -109,7 +90,7 @@ for h in range(0, N):
         del tpdl[b[c]-c]     
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
-#plot the original values                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+#plot the original values
 plt.plot(d, v, color='black', linewidth=0.5)
 #plot the TP
 plt.plot(tpd,tpv, color='blue', linewidth=1.5)
