@@ -2,6 +2,11 @@
 
 \usepackage[english]{babel}  % Language support
 
+%% Misc packages
+\usepackage{framed}  % Enables frames around quote env.
+\usepackage[hyphens]{url}
+\usepackage{hyperref}  % \url command, properly working
+
 %% Font selection
 \usepackage{newpxtext,newpxmath}
 \usepackage[T1]{fontenc}
@@ -22,10 +27,6 @@
 %% Bibliography
 \usepackage[style=ieee, isbn=false]{biblatex}
 \addbibresource{bibliography.bib}
-
-%% Other packages
-\usepackage{framed}  % Enables frames around quote env.
-\usepackage{url, hyperref}  % \url command, properly working
 
 %% Shortcuts
 \usepackage{xspace}
@@ -73,27 +74,25 @@ In particular, our focus in this report is on stock market data, which is outsta
 
 \section{Time series dimensionality reduction}\label{sec:theory}
 
-In relevant literature, many algorithms have been proposed for representing time series into their segmented forms, and many methods for creating time series representations can be found.
+In relevant literature, many algorithms have been proposed for representing time series into their segmented forms (i.e., dimensionally reduced), and many methods for creating time series representations can be found.
 
 Generally, basic classification of algorithmic methods for segmentation implies their division into two great categories: offline, and online algorithms. The essence of offline segmentation is contained in the scanning and division of the entire time series $ T = \left\{ \left( y_1, t_1\right), \left(y_2, t_2 \right), \dots ,\left(y_n, t_n\right)\right\} $ into a number of segments, while the available number of data (data points) remains unchanged. On the other hand, in the online segmentation the uploading of new data points is performed in parallel with the execution of the algorithm. Data points $\left(y_i, t_i\right)$ are added one by one at every time step $t_i$, (for $i = 1,2, \dots ,n$, where $n$ is growing potentially forever); the algorithm must decide whether the new data points belong to the previous segment, or should be assigned to a new segment, which starts at $t_i$. 
 
 Based on the essential context of the offline and online segmentation, numerous algorithms for segmentation of time series are usually classified into one of the following categories of algorithms: \emph{top-down} algorithm; \emph{bottom-up} algorithm; and \emph{sliding window} algorithm. As a result of combining bottom-up and sliding window procedures, a new, precise, streaming \emph{SWAB} algorithm (Sliding Window And Bottom-up algorithm), has been developed.
 
-\paragraph{Top-down} The top-down algorithm, often called \enquote{divide and conquer} or \enquote{binary split}, starts with conditional observing of non-segmented time series as one major segment. Based on the consideration of all possible variants for initial division, the best location for placing the boundary (breaking point) that splits original time series in two segments, $S_1$ (left) and $S_2$ (right), is identified, but in such a way that the difference between those two segments is maximal. Both of these segments are then tested from the aspect of the level of the approximation error. If the approximation error of the observed segment is below the user-defined threshold, the segmentation procedure stops, and the tested segment is accepted. On the other hand, if the approximation error is above the user-defined threshold, further division of the tested segment into two new (sub)segments is performed. For each of the newly formed segments, the process of division into two new segments is repeated in an identical manner, without effect on the location of the breaking point determined in the previous iteration (step). The algorithm repeats these steps until some of the defined stopping criteria is satisfied (i.e., when further division no longer contributes to the minimisation of the segment or segmentation error): 
-\begin{enumerate}
+\paragraph{Top-down} The top-down algorithm, often called \enquote{divide and conquer} or \enquote{binary split}, starts with conditional observing of non-segmented time series as one major segment. Based on the consideration of all possible variants for initial division, the best location for placing the breaking point that splits original time series in two segments is identified, in such a way that the difference between those two segments is maximal. Both these segments are then tested with regard to the approximation error. If the approximation error of the observed segment is below the user-defined threshold, the segmentation procedure stops, and the tested segment is accepted. On the other hand, if the approximation error is above the user-defined threshold, further division of the tested segment into two new (sub)segments is performed. For each of the newly formed segments, the process of division into two new segments is repeated in an identical manner, without effect on the location of the breaking point determined in the previous iteration. The algorithm repeats these steps until some of the defined stopping criteria is satisfied (i.e., when further division no longer contributes to the minimisation of the segment or segmentation error): \begin{enumerate}
 	\item $k$ number of segments, and/or,
 	\item approximation error less than the user-specified threshold.
 \end{enumerate} 
 
-\paragraph{Bottom-up} The bottom-up algorithm, often called \enquote{iterative merge}, as a natural complement to the top-down algorithm, begins by dividing the original time series, of length $n$, into a large number of very small segments with equal lengths. In the next step, based on the comparison of each pair of consecutive segments (including left and right neighbour), the pairs that cause the smallest increase in the error are being identified, and consequently merged in one new, bigger segment. The algorithm repeats these steps until some of the defined stopping criteria is satisfied: 
-\begin{enumerate}
+\paragraph{Bottom-up} The bottom-up algorithm, often called \enquote{iterative merge}, as a natural complement to the top-down algorithm, begins by dividing the original time series, of length $n$, into a large number of very small segments with equal lengths. In the next step, based on the comparison of each pair of consecutive segments, the pairs that cause the smallest increase in the error are identified, and consequently merged in a bigger segment. The algorithm repeats these steps until some of the defined stopping criteria is satisfied: \begin{enumerate}
 	\item $k$ number of segments, and/or,
 	\item approximation error greater than specified threshold.
 \end{enumerate}
 
-\paragraph{Sliding window} The process of segmentation by using the sliding window algorithm, often called \enquote{brute force} or \enquote{one-pass algorithm}, begins by determining the left boundary (anchor) of the first potential segment (usually the first data point of a time series), which is also the starting point for the window which slides (to the right) along the time series, and in that manner provides identification and selection of segments that satisfy predefined segmentation criterion (user-specified threshold). While sliding down the sequence, the size of the window gradually increases, since all the visited data points on its journey, automatically become potential elements of potential segment, until the error of the potential segment does not become greater than the user-specified threshold. At this point, the right boundary of the moving window ceases to be unknown. In that manner, the length of the certain segment is being determined, and the stopping point of the newly formed segment becomes the new anchor (i.e., the starting point of the next potential segment).
+\paragraph{Sliding window} The process of segmentation by using the sliding window algorithm, often called \enquote{brute force} or \enquote{one-pass algorithm}, begins by determining the left anchor of the first potential segment (usually the first data point of a time series), which is also the starting point for the window which slides to the right along the time series; this way, the segments that satisfy predefined segmentation criterion (typically a user-specified threshold) are identified and selected. While sliding down the sequence, the size of the window gradually increases, since all the visited data points become potential elements of next segment to be defined, until the error of the potential segment exceeds the user-specified threshold. At this point, the right boundary of the moving window ceases to be unknown: the length of the segment is determined, and the stopping point of the newly formed segment becomes the new anchor (i.e., the starting point of the next potential segment).
 
-\paragraph{SWAB} SWAB is a more accurate algorithm for segmentation of data streams. Its name indicates that it is the approach that is based on a combination of the sliding window and bottom-up algorithms. SWAB segmentation algorithm begins by defining and selecting one, initial size of the buffer that is big enough to contain enough data to create 5 or 6 segments. In the next step, the bottom-up procedure is applied to the data (data points) inside the buffer. In that way, the leftmost segment is detected, and the data points that correspond to the detected segment are reported and removed from the buffer. Then, in the buffer, using classical sliding window procedure for defining new entry points, new data points are added. It follows re-application of the bottom-up procedure in the buffer. Obviously, the described process of incorporating new data points in the buffer can be repeated as long as the data arrive in continuous streams, potentially indefinitely. 
+\paragraph{SWAB} SWAB is a more accurate algorithm for segmentation of data streams. Its name points out that it is the approach that is based on a combination of the sliding window and bottom-up algorithms. SWAB segmentation algorithm begins by defining and selecting one initial size of the buffer that is big enough to contain enough data to create 5 or 6 segments. In the next step, the bottom-up procedure is applied to the data points inside the buffer. In that way, the leftmost segment is detected, and the data points that correspond to the detected segment are removed from the buffer. Then, in the buffer, using classical sliding window procedure for defining new entry points, new data points are added. A new iteration of the bottom-up procedure is performed in the buffer. Obviously, this process of incorporating new data points in the buffer can be repeated as long as the data arrive in continuous streams, potentially indefinitely. 
 
 
 
@@ -101,64 +100,61 @@ Based on the essential context of the offline and online segmentation, numerous 
 
 \section{Methods}\label{sec:methods}
  
-What follows is a selection of academical papers focusing specifically on the dimensionality reduction applied to financial time series. 
+What follows is a selection of academical papers focusing specifically on dimensionality reduction methods applied to financial time series. 
 
 
 \newpaper{Fu2011164}{overview}
-In this paper, a comprehensive revision on the existing time series data mining research is given. They are generally categorised into representation and indexing, similarity measure, segmentation, visualisation and mining. Moreover state-of-the-art research issues are also highlighted. The primary objective of this paper is to serve as a glossary for interested researchers to have an overall picture on the current time series data mining development and identify their potential research direction to further investigation. 
+In this paper, a comprehensive revision on the existing time series data mining research is given. Research is generally categorised into representation and indexing, similarity measure, segmentation, visualisation and mining. Moreover, state-of-the-art research issues are also highlighted. The primary objective of this paper is to serve as a glossary for interested researchers to have an overall picture on the current time series data mining development and identify their potential research direction to further investigation. 
 
 
 \newpaper{Yu2006}{PIP, pattern matching} 
-
-Given a set of pattern templates, evolutionary computation is an appropriate tool to segment time series flexibly and effectively. In this paper is proposed a new distance measure based on pattern distance for fitness evaluation. Time sequence is represented by a series of perceptually important points and converted into piecewise trend sequence. Pattern distance measures the trend similarity of two sequences.
+Given a set of pattern templates, evolutionary computation is an appropriate tool to segment time series flexibly and effectively. In this paper, a new distance measure based on pattern distance for fitness evaluation is proposed. Time sequence is represented by a series of perceptually important points and converted into piecewise trend sequence. Pattern distance measures the trend similarity of two sequences.
 
 
 \newpaper{Chung:2004:EAP:2221374.2221698}{pattern matching, PIP}
-
-Here is considered the problem of identifying a suitable set of time points for segmenting the time series in accordance with a given set of pattern templates (e.g., a set of technical patterns for stock analysis). The use of fixed-length segmentation is an oversimplified approach to this problem; hence, a dynamic approach (with high controllability) is preferable so that the time series can be segmented flexibly and effectively according to the needs of the users and the applications. It is proposed an evolutionary time series segmentation algorithm that allows a sizeable set of pattern templates to be generated for mining or query. In addition, defining similarity between time series (or time series segments) is of fundamental importance in fitness computation. By identifying the perceptually important points (PIPs) directly from the time domain, time series segments and templates of different lengths can be compared and intuitive pattern matching can be carried out in an effective and efficient manner.
+This paper considers the problem of identifying a suitable set of time points for segmenting the time series in accordance with a given set of pattern templates (e.g., a set of technical patterns for stock analysis). The use of fixed-length segmentation is an oversimplified approach to this problem; hence, a dynamic approach (with high controllability) is preferable so that the time series can be segmented flexibly and effectively according to the needs of the users and the applications. It is proposed an evolutionary time series segmentation algorithm that allows a sizeable set of pattern templates to be generated for mining or query. In addition, defining similarity among time series (or time series segments) is of fundamental importance in fitness computation. By identifying the perceptually important points (PIPs) directly from the time domain, time series segments and templates of different lengths can be compared, and intuitive pattern matching can be carried out in an effective and efficient manner.
 
 
 \newpaper{Fu2007347}{pattern matching, PIP}
-
-When it comes to locate the technical patterns in the stock price movement charts to analyse the market behaviour, there are two main problems: how to define those preferred patterns (technical patterns) for query and how to match the defined pattern templates in different resolutions. Defining the similarity between time series (or time series subsequences) is of fundamental importance. By identifying the perceptually important points (PIPs) directly from the time domain, time series and templates of different lengths can be compared. Three ways of distance measure, including Euclidean distance (PIP-ED), perpendicular distance (PIP-PD) and vertical distance (PIP-VD), for PIP identification are compared in this paper. After the PIP identification process, both template- and rule-based pattern-matching approaches are introduced.
+When it comes to locating the technical patterns in the stock price movement charts to analyse the market behaviour, there are two main problems: how to define those preferred patterns (technical patterns) for query and how to match the defined pattern templates in different resolutions. Defining the similarity between time series (or time series subsequences) is of fundamental importance. By identifying the perceptually important points (PIPs) directly from the time domain, time series and templates of different lengths can be compared. Three ways of distance measure, including Euclidean distance (PIP-ED), perpendicular distance (PIP-PD) and vertical distance (PIP-VD), for PIP identification are compared in this paper. After the PIP identification process, both template- and rule-based pattern-matching approaches are introduced.
 
 
 \newpaper{Fu2008277}{PIP, binary tree representation}
-
-Stock time series has its own characteristics over other time series. Dimensionality reduction is an essential step before many time series analysis and mining tasks. In this paper, financial time series are represented according to the importance of the data points. With the concept of data point importance, a tree data structure, which supports incremental updating, is proposed to represent the time series and an access method for retrieving the time series data point from the tree, which is according to their order of importance, is introduced. This technique is capable to present the time series in different levels of detail and facilitate multi-resolution dimensionality reduction of the time series data.
+Stock time series has its own characteristics over other time series. Dimensionality reduction is an essential step before many time series analysis and mining tasks. In this paper, financial time series are represented according to the importance of the data points. With the concept of data point importance, a tree data structure, which supports incremental updating, is proposed to represent the time series and an access method for retrieving the time series data point from the tree, which is according to their order of importance, is introduced. This technique is capable of presenting the time series in different levels of detail and facilitating multi-resolution dimensionality reduction of time series data.
 
 
 \newpaper{5250725}{PIP, binary tree representation}
-
-Financial time series often exhibit high degrees of fluctuation which are considered as noise in time series analysis. To remove noise, in financial time series analysis, it is important to retain the important points and remove others. Here is proposed the Zigzag based Perceptually Important Point Identification method to collect those zigzag movement important points. Further, it is also proposed Zigzag based Multiway Search Tree to index these important points.
+Financial time series often exhibit high degrees of fluctuation which are regarded as noise in time series analysis. To remove noise, in financial time series analysis, it is important to retain the important points and remove others. Here is proposed the Zigzag based Perceptually Important Point Identification method to collect those zigzag movement important points. Further, it is also proposed Zigzag based Multiway Search Tree to index these important points in a convenient way.
 
 
 \newpaper{clinverse}{pattern matching, PIP}
-
-In this paper, according to the characteristics of PTSS (Patterned-based time series segmentation), a generalized model is proposed for PTSS. Aa new interpretation for PTSS is given by comparing this problem with the prototype-based clustering (PC). Then, a novel model, called clustering-inverse model (CI-model), is presented. Finally, two algorithms are presented to implement this model.
+In this paper, according to the characteristics of PTSS (Patterned-based time series segmentation), a generalised model is proposed for PTSS. A new interpretation for PTSS is given by comparing this problem with the prototype-based clustering (PC). Then, a novel model, called clustering-inverse model (CI-model), is presented. Finally, two algorithms are presented to implement this model.
 
 
 \newpaper{5961935}{turning points, PIP}
-
 In this paper, a novel time series segmentation method based on Turning Points is proposed. Turning Points are extracted from the maximum or minimum points of the time series. The proposed segmentation method generates segments at different levels of details and achieves satisfactory results in preserving higher number of trends compared to an existing segmentation approach.
 
 
 \newpaper{Vo2013}{turning points}
-
-In this paper it is proposed an approach established on turning points to reduce the dimensions of stream time series data, and this task supports the prediction process faster in in stream data environment. The turning points are extracted from the maximum or minimum points of the time series data proved more efficient and effective in the process of processing data for time series predictive analysis.
+In this paper it is proposed an approach established on turning points to reduce the dimensions of stream time series data, and this task supports the prediction process faster in stream data environment. The turning points are extracted from the maximum or minimum points of the time series data proved more efficient and effective in the process of processing data for time series predictive analysis.
 
 
 \newpaper{Fu20081217}{PIP, binary tree representation}
-
 In this paper, a framework that represents and visualises time series data based on data point importance is proposed. Furthermore, discovering frequently appearing and surprising patterns are non-trivial tasks in financial applications. A method for discovering patterns across different resolutions is proposed. The proposed method is based on a modified version of VizTree. By converting the time series to symbol string based on data point importance, the potential patterns with different lengths can be encoded in the VizTree for visual pattern discovery while the important points and the overall shape of the time series patterns can be preserved even under a high compression ratio.
 
 
+\newpaper{Lavrenko00miningof}{trend identification, finance}
+This paper describe the design and implementation of {\AE}nalyst, a system for predicting trends in stock prices based on the content of news stories that precede the trends. Trends are identified in time series using piecewise linear fitting and then labels are assigned to trends according to an automated binning procedure. Language models are used to represent patterns of language that are highly associated with particular labelled trends. {\AE}nalyst can then identify news stories that are highly indicative of future trends.
+
+
+\newpaper{Kim2002}{prediction, finance}
+This paper presents a two-phase (extraction and filtering) stock trading system that aims at maximising the rates of returns. Extraction of stocks is performed by searching specific time-series patterns described by a combination of values of technical indicators. In the filtering phase, several rules are applied to the extracted sets of stocks to select stocks to be actually traded. The filtering rules are induced from past data using distributional differences. From a large database of daily stock prices, the values of technical indicators are calculated. They are used to make the extraction patterns, and the distributions of the discretisation intervals of the values are calculated for both positive and negative data sets. The values in the intervals of distinctive distribution may contribute to the prediction of future trend of stocks, so the rules for filtering stocks are induced using those intervals.
 
 
 
 
 
-
+\clearpage % TODO Clearpage
 
 \section{Implementations}\label{sec:implementations}
 
@@ -172,7 +168,7 @@ Basically, the algorithm is divided into two phases. First, during a preprocessi
 
 \subsection{Turning points in \matlab}\label{sec:tp_matlab}
 
-\paragraph{Implementation} The method is developed and tested over \csv files downloaded from Yahoo! Finance website\footnote{\url{http://finance.yahoo.com/market-overview/}}. Should another source be used, basic adaptations may be necessary, mostly in the handling of temporal data\footnote{Due to our limited knowledge of Matlab language, we may have dealt with the source data in a na{\"i}ve way. Nevertheless, the procedure seems to work well.} (i.e., dates), which is performed in \texttt{TP\_prepareData()} procedure. 
+\paragraph{Implementation} The method is developed and tested over \csv files downloaded from Yahoo!\ Finance website\footnote{\url{http://finance.yahoo.com/market-overview/}}. Should another source be used, basic adaptations may be necessary, mostly in the handling of temporal data\footnote{Due to our limited knowledge of Matlab language, we may have dealt with the source data in a na{\"i}ve way. Nevertheless, the procedure seems to work well.} (i.e., dates), which is performed in \texttt{TP\_prepareData()} procedure. 
 
 After importing the aforementioned \csv file (we suggest to use the graphical interface provided by \matlab itself), the user should issue the following command, in order to compute and plot the results: \mint{matlab}{y = TurningPoints(time, values, n);}
 
@@ -193,7 +189,7 @@ Here, \texttt{time} and \texttt{values} represent the time series as imported fr
 \clearpage % TODO Clearpage
 
 The main supporting function is \texttt{TP\_preprocess()}, which implements the preprocessing phase, and is presented in \cref{lst:preprocess}. The other supporting functions are of secondary importance, so we are not presenting them here. Basically we have: \begin{itemize}
-	\item \texttt{TP\_prepareData()} takes in input raw Yahoo! Finance data and prepares them to the processing;
+	\item \texttt{TP\_prepareData()} takes in input raw Yahoo!\ Finance data and prepares them to the processing;
 	\item \texttt{TP\_cleaning()} cleans data matrix after processing;
 	\item \texttt{TP\_output()} shows information about the processing (i.e., the number of deleted elements).
 \end{itemize} 
@@ -215,16 +211,45 @@ Original data contains 53 samples; preprocessing reduces them to 27, and finally
 
 \begin{figure}%[H]
 	
-	\makebox[\textwidth][c]{\includegraphics[width=1.8\textwidth]{img/a2a_W_15}}
+	\makebox[\textwidth][c]{\includegraphics[trim = {0 1.5cm 0 1.5cm}, clip,width=1.8\textwidth]{img/a2a_W_15}}
 	
 	\caption{\texttt{A2A.MI} weekly 2015. Original data is in the correct position. The other two series are shifted down by 0.1 each.}\label{fig:a2a_w_2015}
 
 \end{figure}
 
 
+
+
 \subsection{Turning points in Python}\label{sec:tp_python}
 
-Python is an excellent language for working with financial data.There is a strong support for downloading, manipulating, and visualizing financial market data through popular open source libraries like Pandas and Matplotlib.Sources:-Yahoo! Finance-Google Finance-St.Louis FED (FRED)-Kenneth French’s data library-World Bank-Google Analytics    Possible indicators for Yahoo Finance:-Open         -High-Low-Close-Volume-Adj CloseThe inputs of the program are: -period of time to be considered-name of the share-level of deepnessThe program che be divided in four parts:1) prepare, cleaning and convert the data in the time serie2) find the turning points.Local maximum and minimum points are often called Turning Points (TPs) since they indicate the change in the trend of the stock during a period. 3) flatten the time serie at different level of deepness4) plot the results The algorithm presented in the paper has been slightly modified. In the conditions for finding the TPs: -greater/less- than has been replaced with -greater or equal/less or equal than-, and the points at the same level have been adjusted afterwards.     This modification brought to a better alignment between the original data and the trend function.
+Python is an excellent language for working with financial data. There is a strong support for downloading, manipulating, and visualising financial market data through popular open source libraries like \texttt{Pandas} and \texttt{Matplotlib}.
+
+In particular, through \texttt{Pandas} we can automatically download data from a number of sources: \begin{itemize}
+	\item Yahoo!\ Finance;
+	\item Google Finance;
+	\item St.Louis FED (FRED);
+	\item Kenneth French's data library;
+	\item World Bank;
+	\item Google Analytics.
+\end{itemize}Focusing on Yahoo!\ Finance, which is our reference source, the set of available indicators is as follows: \begin{itemize}
+	\item \texttt{Open};
+	\item \texttt{High};
+	\item \texttt{Low};
+	\item \texttt{Close};
+	\item \texttt{Volume};
+	\item \texttt{Adj.\ Close}.
+\end{itemize}
+Let us now go to the code, which is presented in \cref{lst:python,lst:python2} for convenience. The program takes in input the period of time to be considered, the name of the share and the level of deepness. The program is structured in four phases: \begin{enumerate}
+	\item prepare, cleaning and convert the data in the time series;
+	\item find the local maximum and minimum points (often called \emph{turning points} since they indicate the change in the trend of the stock during a period);
+	\item flatten the time serie at different level of deepness;
+	\item plot the results.
+\end{enumerate}
+
+Actually, we are presenting a slightly different algorithm from the one in our reference paper. When looking for local maximum and minimum points, the conditions \emph{greater}/\emph{less} than were replaced with \emph{greater than or equal to}/\emph{less than or equal to}, and the points at the same level have been adjusted afterwards. This modification brought to a better alignment between the original data and the trend function. The results of some processing are shown in \cref{fig:python}.
+
+\clearpage % TODO Clearpage
+
 
 
 \begin{listing}%[H]
@@ -235,8 +260,10 @@ Python is an excellent language for working with financial data.There is a stro
 
 \end{listing}
  
+\clearpage % TODO Clearpage
+
  
-\begin{listing}%[H]
+\begin{listing}[H]
  
 \inputminted[firstline = 50, lastline = 90, breaklines = true]{python}{../code/TPs_Python.py}
 
@@ -244,11 +271,10 @@ Python is an excellent language for working with financial data.There is a stro
 
 \end{listing}
  
+\clearpage % TODO Clearpage
 
 
 \begin{figure}%[H]
-	
-	%\makebox[\textwidth][c]{\includegraphics[trim = {0 0 0 12.7cm}, clip,  width=1.5\textwidth]{img/L}}
 	
 	\makebox[\textwidth][c]{\includegraphics[trim = {0 0 0 12.3cm}, clip,  width=1.5\textwidth]{img/LTP}}
 	
@@ -263,16 +289,40 @@ Python is an excellent language for working with financial data.There is a stro
 \end{figure}
 
 
+\clearpage % TODO Clearpage
+
+
 \subsection{Other implementations}\label{sec:other}
-\lipsum[4-6] %TODO Ramer-Douglas-Peucker
+
+During our research, we also found an algorithm, developed in the 1970s, named after its three creators: Urs Ramer, David Douglas and Thomas Peucker\footnote{\url{https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm}}. We are presenting it rather informally, since it was initially developed for cartographic generalisation, and is now used for the processing of vector graphics.
+
+However, an implementation of the algorithm is already available in \matlab (and others may be easily found in different programming languages), which also gives quite good results (see \cref{fig:rdp}), so we find it appropriate to mention it in this report. 
+
+\begin{figure}[H]
+	
+	\makebox[\textwidth][c]{\includegraphics[trim = {0 1cm 0 1cm}, clip,width=1.8\textwidth]{img/rdp}}
+	
+	\caption{\texttt{A2A.MI} daily stock market data from January 2015 to April 2016.}\label{fig:rdp}
+
+\end{figure}
+
+After installing the add-on\footnote{\url{http://www.mathworks.com/matlabcentral/fileexchange/41986-ramer-douglas-peucker-algorithm-demo}} and importing data, the user may issue the following command: \mint{matlab}{y = DouglasPeucker(M, epsilon, img);}
+
+The results are stored in \texttt{y} matrix. In the command, \texttt{M} is the matrix containing the time series data, \texttt{epsilon} represents the approximation value (in \cref{fig:rdp}, where points range roughly between 0.8 and 1.4, the value 0.05 was used for \texttt{epsilon}), and \texttt{img} is a boolean stating whether the user wants a plot as output (actually, the plot is of really low quality, and the user had better to plot \texttt{y} matrix with standard \matlab commands). 
+ 
+ 
+
+
+
+
+
 
 
 
 
 
 \clearpage
-\defbibnote{prenote}{DOI (Digital Object Identifier), when defined, serves as URL to retrieve the document. Documents may be accessible only on institutional log in (e.g., academic credentials).}
-%\nocite{*}
+\defbibnote{prenote}{DOI (Digital Object Identifier), when defined, serves as URL to retrieve the document. Documents may be accessible only after institutional log in (e.g., academic credentials).}
 \printbibliography[title={Bibliography}, prenote=prenote] 
 
 
