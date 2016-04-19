@@ -42,11 +42,11 @@
 
 }
 
-%% Last package of all
+%% Last package to be loaded (for compatibility issues)
 \usepackage{cleveref}  % Allows en­hanced cross-ref­er­enc­ing fea­tures
 
 %% Document details
-\title{Piecewise segmentation for financial data}
+\title{Piecewise analysis of stock market data}
 \author{Paolo Antonini \and Davide Azzalini \and Fabio Azzalini}
 \date{}
 
@@ -57,28 +57,27 @@
 
 \maketitle
 
-
-
 \begin{abstract}
-Time series data is characterised as large in data size, high dimensionality and update continuously. Moreover, the time series data is always considered as a whole instead of individual numerical fields. As a consequence, in order to analyse and mine time series data, segmentation and dimensionality reduction are essential. In particular, in the following pages we are going to collect and study some segmentation methods, applied in particular to stock market data. Stock time series has its own characteristics over other time series. 
+Time series data is characterised as large in size, high dimensionality and continuous updates. Moreover, it is always considered as a whole, instead of individual numerical fields. As a consequence, in order to analyse and mine time series data, segmentation and dimensionality reduction are essential, as well as trend identification. In particular, in the following pages we are going to collect and summarise some segmentation methods, applied in particular to stock market data. As a matter of fact, stock time series have their own characteristics over other time series. 
 \end{abstract}
 
 
 
 
 \section{Introduction}
-The tasks of segmentation and dimensionality reduction, as well as identification of trends, are fundamental to allow a number of time series analysis and mining tasks. As a matter of fact, the fields of application of such procedures are numerous (ECG, exchange rates, sensor detections of any kind, \dots) and methods differ from application to application, due to the characteristics of data. As a consequence, literature regarding these issues is vast. 
+The tasks of segmentation and dimensionality reduction, as well as identification of trends, are fundamental to allow a number of time series analysis and mining tasks. As a matter of fact, the fields of application of such procedures are numerous (ECG, exchange rates, sensors detections of any kind, \dots); moreover methods to perform this kind of preprocessing differ greatly, due to the nature and inherent characteristics of data. As a consequence, literature regarding these issues is vast. 
 
-In particular, our focus is on stock market data, which is inherently large in size, noisy and continuously updated. This paper is structured as follows: in \cref{sec:theory} we are providing a theoretical introduction and overview on the problem. Then in \cref{sec:methods} a number of research papers about dimensionality reduction and piecewise segmentation are listed and summarised. Then, in \cref{sec:implementations} we are going to present the implementations of a few methods. 
+In particular, our focus in this report is on stock market data, which is outstandingly large in size, noisy and continuously updated. This paper is structured as follows: in \cref{sec:theory} we are providing a theoretical introduction and overview on the problem. Then in \cref{sec:methods} a number of research papers about dimensionality reduction and piecewise segmentation are listed and summarised. Then, in \cref{sec:implementations} we are going to present the implementations of a few methods. 
+
 
 
 \section{Time series dimensionality reduction}\label{sec:theory}
 
-In relevant literature, many algorithms have been proposed for representation of time series into their segmented forms, many methods for creating time series representations can be found.
+In relevant literature, many algorithms have been proposed for representing time series into their segmented forms, and many methods for creating time series representations can be found.
 
-Generally, basic classification of algorithmic methods for segmentation implies their division into two categories: offline, and online algorithms. The essence of the offline segmentation is contained in the scanning and division of entire time series $ T = \left\{ \left( y_1, t_1\right), \left(y_2, t_2 \right), \dots ,\left(y_n, t_n\right)\right\} $, into a number of segments, while the available number of data (data points) remains unchanged during the execution time of the algorithm. On the other hand, in the online segmentation parallel with the execution time of the algorithm, the uploading of new data points is being performed, one at the time, $\left( y_1, t_1\right)$, $\left(y_2, t_2 \right)$,$\dots$,$\left(y_{n-m}, t_{n-m} \right)$,$\dots$, and at every time step $t_i$, (for $i = 1,2, \dots ,n$, where $n$ is growing potentially forever) it must be decided whether the obtained data belong to the previous segment, or should be assigned to a new segment, which starts at $t_i$. 
+Generally, basic classification of algorithmic methods for segmentation implies their division into two great categories: offline, and online algorithms. The essence of offline segmentation is contained in the scanning and division of the entire time series $ T = \left\{ \left( y_1, t_1\right), \left(y_2, t_2 \right), \dots ,\left(y_n, t_n\right)\right\} $ into a number of segments, while the available number of data (data points) remains unchanged. On the other hand, in the online segmentation the uploading of new data points is performed in parallel with the execution of the algorithm. Data points $\left(y_i, t_i\right)$ are added one by one at every time step $t_i$, (for $i = 1,2, \dots ,n$, where $n$ is growing potentially forever); the algorithm must decide whether the new data points belong to the previous segment, or should be assigned to a new segment, which starts at $t_i$. 
 
-Based on the essential context of the offline and online segmentation, numerous algorithms for segmentation of time series are are usually classified into one of the following categories of algorithms: \emph{top-down} algorithm; \emph{bottom-up} algorithm; and \emph{sliding window} algorithm. As a result of combining bottom-up and sliding window procedures, a new, precise, streaming \emph{SWAB} algorithm (Sliding Window And Bottom-up algorithm), has been developed.
+Based on the essential context of the offline and online segmentation, numerous algorithms for segmentation of time series are usually classified into one of the following categories of algorithms: \emph{top-down} algorithm; \emph{bottom-up} algorithm; and \emph{sliding window} algorithm. As a result of combining bottom-up and sliding window procedures, a new, precise, streaming \emph{SWAB} algorithm (Sliding Window And Bottom-up algorithm), has been developed.
 
 \paragraph{Top-down} The top-down algorithm, often called \enquote{divide and conquer} or \enquote{binary split}, starts with conditional observing of non-segmented time series as one major segment. Based on the consideration of all possible variants for initial division, the best location for placing the boundary (breaking point) that splits original time series in two segments, $S_1$ (left) and $S_2$ (right), is identified, but in such a way that the difference between those two segments is maximal. Both of these segments are then tested from the aspect of the level of the approximation error. If the approximation error of the observed segment is below the user-defined threshold, the segmentation procedure stops, and the tested segment is accepted. On the other hand, if the approximation error is above the user-defined threshold, further division of the tested segment into two new (sub)segments is performed. For each of the newly formed segments, the process of division into two new segments is repeated in an identical manner, without effect on the location of the breaking point determined in the previous iteration (step). The algorithm repeats these steps until some of the defined stopping criteria is satisfied (i.e., when further division no longer contributes to the minimisation of the segment or segmentation error): 
 \begin{enumerate}
@@ -224,8 +223,8 @@ Original data contains 53 samples; preprocessing reduces them to 27, and finally
 
 
 \subsection{Turning points in Python}\label{sec:tp_python}
-\lipsum[1-3]
 
+Python is an excellent language for working with financial data.There is a strong support for downloading, manipulating, and visualizing financial market data through popular open source libraries like Pandas and Matplotlib.Sources:-Yahoo! Finance-Google Finance-St.Louis FED (FRED)-Kenneth French’s data library-World Bank-Google Analytics    Possible indicators for Yahoo Finance:-Open         -High-Low-Close-Volume-Adj CloseThe inputs of the program are: -period of time to be considered-name of the share-level of deepnessThe program che be divided in four parts:1) prepare, cleaning and convert the data in the time serie2) find the turning points.Local maximum and minimum points are often called Turning Points (TPs) since they indicate the change in the trend of the stock during a period. 3) flatten the time serie at different level of deepness4) plot the results The algorithm presented in the paper has been slightly modified. In the conditions for finding the TPs: -greater/less- than has been replaced with -greater or equal/less or equal than-, and the points at the same level have been adjusted afterwards.     This modification brought to a better alignment between the original data and the trend function.
 
 
 \begin{listing}%[H]
@@ -247,8 +246,25 @@ Original data contains 53 samples; preprocessing reduces them to 27, and finally
  
 
 
+\begin{figure}%[H]
+	
+	%\makebox[\textwidth][c]{\includegraphics[trim = {0 0 0 12.7cm}, clip,  width=1.5\textwidth]{img/L}}
+	
+	\makebox[\textwidth][c]{\includegraphics[trim = {0 0 0 12.3cm}, clip,  width=1.5\textwidth]{img/LTP}}
+	
+	\makebox[\textwidth][c]{\includegraphics[trim = {0 0 0 12.3cm}, clip,  width=1.5\textwidth]{img/L1}}
+	
+	\makebox[\textwidth][c]{\includegraphics[trim = {0 0 0 12.3cm}, clip,  width=1.5\textwidth]{img/L2}}
+	
+	\makebox[\textwidth][c]{\includegraphics[trim = {0 0 0 12.3cm}, clip,  width=1.5\textwidth]{img/L5}}
+	
+	\caption{\texttt{A2A.MI} daily \texttt{Close} quotations from mid-april 2015 to mid-april 2016 after preprocessing (local maxima/minima), then after one, two and five iterations of the algorithm.}\label{fig:python}
+
+\end{figure}
+
+
 \subsection{Other implementations}\label{sec:other}
-\lipsum[4-6]
+\lipsum[4-6] %TODO Ramer-Douglas-Peucker
 
 
 
